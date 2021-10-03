@@ -1,0 +1,107 @@
+{% block body %}
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+
+<div class="container" style = "margin-top:50px">
+    <h2 class="text-center">Dependent Dropdown</h2>
+    <br><br>
+    {% include 'messages.html' %}
+    <form method="POST" id="indexForm" data-states-url="{% url 'ajax_load_states'%}" data-districts-url="{% url 'ajax_load_districts'%}" data-cities-url="{% url 'ajax_load_cities'%}">
+         {% csrf_token %}
+         <label>Name</label>
+      <input name="name" id="name" class="form-control" placeholder="Please Enter your name">
+
+        <br>
+        <label>Country</label>
+        <select name="country" id="country" class="form-control">
+            <option value="">---select country---</option>
+            {% for i in country %}
+            <option value="{{i.id}}">{{i.name}}</option>
+            {% endfor %}
+        </select>
+        <br>
+        <label>States</label>
+      <select name="states" id="states" class="form-control">
+
+        </select>
+        <br>
+        <label>District</label>
+         <select name="districts" id="districts" class="form-control">
+
+        </select>
+        <br>
+        <label>Cities</label>
+         <select name="cities" id="cities" class="form-control">
+
+        </select>
+        <br>
+        <input type = "submit" value="Submit" class="form-control btn btn-primary">
+    </form>
+<br>
+    <a class="btn btn-primary" href="{% url 'responses' %}" role="button">View Data</a>
+</div>
+
+
+
+
+<div class="row">
+    <div class="col-lg-6 m-auto text-center border border-primary">
+        <div class="box">
+            <h3>Please Insert Data in database If data is not visible</h3><br>
+            <a href="{%url 'form' %}"><h3>Use Other simple method using api</h3></a>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+  <script>
+    $("#country").change(function () {
+      var url = $("#indexForm").attr("data-states-url");
+      var countryId = $(this).val();
+
+      $.ajax({
+        url: url,
+        data: {
+          'country': countryId
+        },
+        success: function (data) {
+          $("#states").html(data);
+        }
+      });
+
+    });
+
+    $("#states").change(function () {
+      var url = $("#indexForm").attr("data-districts-url");
+      var stateId = $(this).val();
+
+      $.ajax({
+        url: url,
+        data: {
+          'state': stateId
+        },
+        success: function (data) {
+          $("#districts").html(data);
+        }
+      });
+
+    });
+
+    $("#districts").change(function () {
+      var url = $("#indexForm").attr("data-cities-url");
+      var districtId = $(this).val();
+
+      $.ajax({
+        url: url,
+        data: {
+          'district': districtId
+        },
+        success: function (data) {
+          $("#cities").html(data);
+        }
+      });
+
+    });
+  </script>
+
+
+{% endblock%}
